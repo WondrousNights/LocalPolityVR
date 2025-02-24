@@ -7,7 +7,7 @@ public class PlayerManager : NetworkBehaviour
 
     public NetworkVariable<bool> IsReady = new NetworkVariable<bool>();
 
-    public NetworkVariable<Location> Destination = new NetworkVariable<Location>(Location.Forest);
+    public NetworkVariable<SectorType> SectorRepresenting = new NetworkVariable<SectorType>();
 
     public override void OnNetworkSpawn()
     {
@@ -17,12 +17,11 @@ public class PlayerManager : NetworkBehaviour
         {
             gameManager.playerManagers.Add(this);
             IsReady.OnValueChanged += OnReadyChanged;
-            Destination.OnValueChanged += OnDestinationChanged;
+            SectorRepresenting.OnValueChanged += OnSectorChanged;
             SetReadyRpc(false);
         }
         
   
-
         base.OnNetworkSpawn();
     }
 
@@ -39,14 +38,14 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void SetDestinationRpc(Location destination)
+    public void SetSectorRpc(SectorType sector)
     {
-        Destination.Value = destination;
+        SectorRepresenting.Value = sector;
     }
 
-    public void OnDestinationChanged(Location previous, Location current)
+    public void OnSectorChanged(SectorType previous, SectorType current)
     {
-        Debug.Log("My Location : " + Destination.Value);
+        Debug.Log("My Sector : " + SectorRepresenting.Value);
     }
 
 

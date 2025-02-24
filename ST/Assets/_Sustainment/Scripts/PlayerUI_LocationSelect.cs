@@ -28,15 +28,15 @@ public class PlayerUI_LocationSelect : NetworkBehaviour
 
         if(change == 0)
         {
-            playerManager.SetDestinationRpc(Location.Forest);
+            //playerManager.SetDestinationRpc(Location.Forest);
         }
         if(change == 1)
         {
-            playerManager.SetDestinationRpc(Location.Quarry);
+            //playerManager.SetDestinationRpc(Location.Quarry);
         }
         if(change == 2)
         {
-            playerManager.SetDestinationRpc(Location.House);
+            //playerManager.SetDestinationRpc(Location.House);
         }
     }
   

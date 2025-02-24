@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class PlayerUI_ReadyToggle : NetworkBehaviour
 {
     Toggle toggle;
-
     PlayerManager playerManager;
 
     void Start()
