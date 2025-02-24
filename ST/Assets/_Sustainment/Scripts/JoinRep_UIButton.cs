@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,12 +18,39 @@ public class JoinRep_UIButton : NetworkBehaviour
     void Start()
     {
         button = GetComponent<Button>();
+        
 
         button.onClick.AddListener(delegate {
             JoinRep(button);
         });
+
+        IsSelected.OnValueChanged += (oldValue, newValue) => UpdateButtonText();
     }
 
+    public override void OnNetworkSpawn()
+    {
+        
+        StartCoroutine(AssignValues());
+    }
+
+    private IEnumerator AssignValues()
+    {
+        // Wait until the NetworkManager is running and the player object is spawned
+        while (!NetworkManager.Singleton.IsConnectedClient || 
+               !NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject())
+        {
+            yield return null; // Keep waiting
+        }
+
+        if(IsSelected.Value == true)
+        {
+            buttonText.text = "Rep taken";
+        }
+        else
+        {
+            buttonText.text = "Join";
+        }
+    }
 
     void JoinRep(Button change)
     {
@@ -55,11 +83,9 @@ public class JoinRep_UIButton : NetworkBehaviour
     {
         IsSelected.Value = value;
         PlayerSelectedID.Value = playerSelected;
-        SetButtonTextRpc();
     }
 
-    [Rpc(SendTo.Everyone)]
-    void SetButtonTextRpc()
+    void UpdateButtonText()
     {
         if(IsSelected.Value == true)
         {
