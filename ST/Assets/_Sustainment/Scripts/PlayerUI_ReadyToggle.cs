@@ -5,26 +5,26 @@ using UnityEngine.UI;
 [RequireComponent(typeof(UI_PlayerConnection))]
 public class PlayerUI_ReadyToggle : NetworkBehaviour
 {
-    Toggle toggle;
+    Button toggle;
     PlayerManager playerManager;
 
     void Start()
     {
-        toggle = GetComponent<Toggle>();
+        toggle = GetComponent<Button>();
 
-        toggle.onValueChanged.AddListener(delegate {
+        toggle.onClick.AddListener(delegate {
             SetReady(toggle);
         });
     }
 
 
-    void SetReady(Toggle change)
+    void SetReady(Button change)
     {
         if(playerManager == null)
         {
             playerManager = GetComponent<UI_PlayerConnection>().connectedPlayer;
         }
-        playerManager.SetReadyRpc(change.isOn);
+        playerManager.SetReadyRpc(true);
     }
   
 }

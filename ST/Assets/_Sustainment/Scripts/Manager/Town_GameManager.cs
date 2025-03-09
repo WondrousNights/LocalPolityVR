@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -30,20 +31,27 @@ public class Town_GameManager : NetworkBehaviour
     public LobbyState LobbyState = new LobbyState();
     public SectorNeedsState SectorNeedsState = new SectorNeedsState();
     
+    public PolicyIntroductionState PolicyIntroductionState = new PolicyIntroductionState();
+    public DebateState DebateState = new DebateState();
+    public VoteState VoteState = new VoteState();
+
     private List<TownGameState> GameStates;
-    private int GameStateIndex = 0;
+    public int GameStateIndex = -1;
 
     void Start()
     {
-
-        GameStates = new List<TownGameState>
-        {
-            LobbyState,
-            SectorNeedsState
-        };
-
         currentState = LobbyState;
         currentState.EnterState(this);
+        
+        GameStates = new List<TownGameState>
+        {
+            SectorNeedsState,
+            PolicyIntroductionState,
+            DebateState,
+            VoteState
+        };
+
+
 
     }
 
@@ -92,10 +100,71 @@ public class Town_GameManager : NetworkBehaviour
         {
             foreach(PlayerManager manager in playerManagers)
             {
-                manager.IsReady.Value = false;
+                manager.SetReadyRpc(false);
             }
-            GameStateIndex += 1;
+            IncreaseGameStateIndex();
             SwitchStateByInt(GameStateIndex);
         }
     }
+
+    public void IncreaseGameStateIndex()
+    {
+        GameStateIndex += 1;
+
+        if(GameStateIndex > GameStates.Count - 1)
+        {
+            GameStateIndex = 0;
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void TeleportPlayersToSectorRpc()
+    {
+        foreach(PlayerManager player in playerManagers)
+        {
+            player.TeleportToSectorRpc();
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void TeleportPlayersToHallRpc()
+    {
+        foreach(PlayerManager player in playerManagers)
+        {
+            player.TeleportToTownHallRpc();
+        }
+    }
+
+
+    //Managing UI
+
+    public TextMeshProUGUI TownHallText;
+    public List<GameObject> VotingScreens = new List<GameObject>();
+
+    [Rpc(SendTo.Everyone)]
+    public void SetTownHallTextRpc(string text)
+    {
+        TownHallText.text = text;
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void EnableVotingScreensRpc()
+    {
+        foreach(GameObject gameObject in VotingScreens)
+        {
+            gameObject.SetActive(true);
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void DisableVotingScreensRpc()
+    {
+         foreach(GameObject gameObject in VotingScreens)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+
+
 }

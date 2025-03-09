@@ -494,6 +494,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a190e960562b6de4fb13dc8df126c1d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sectorList: {fileID: 11400000, guid: d95938f81ff964a4b872024593da2b97, type: 2}
+  IsReady:
+    m_InternalValue: 0
+  SectorRepresenting:
+    m_InternalValue: 0
 --- !u!1 &5908336471056132768
 GameObject:
   m_ObjectHideFlags: 0
